@@ -1,0 +1,595 @@
+bash
+
+cat > /mnt/user-data/outputs/tony_the_wop.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TONY THE WOP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{width:100%;height:100%;overflow:hidden;touch-action:none;}
+  body{background:#1a1a2e;font-family:'Nunito',sans-serif;user-select:none;}
+  #gc{position:relative;width:100vw;height:100vh;overflow:hidden;}
+  #sky{position:absolute;top:0;left:0;right:0;height:42%;background:linear-gradient(180deg,#0f2a5c 0%,#1e4fa8 60%,#e8a838 100%);}
+  .building{position:absolute;bottom:0;background:#0d1b3e;border-top:2px solid #1e3a6e;}
+  .building::after{content:'';position:absolute;top:0;left:0;right:0;height:100%;background:repeating-linear-gradient(to right,transparent,transparent 10px,rgba(255,220,80,0.15) 10px,rgba(255,220,80,0.15) 12px);}
+  .win-lit{position:absolute;width:6px;height:8px;background:#ffe066;border-radius:1px;}
+  #ground{position:absolute;bottom:0;left:0;right:0;height:58%;}
+  #sidewalk{position:absolute;bottom:0;left:0;right:0;height:100%;background:#b0a898;}
+  #road{position:absolute;bottom:0;left:0;right:0;height:38%;background:#2c2c2c;}
+  .rline{position:absolute;top:50%;height:6px;width:80px;background:#f5c518;border-radius:3px;animation:roadScroll 0.6s linear infinite;}
+  @keyframes roadScroll{from{transform:translateX(0)}to{transform:translateX(-120px)}}
+  #player{position:absolute;width:64px;height:100px;z-index:20;}
+  #player.walk .leg-l{animation:legL 0.3s infinite alternate}
+  #player.walk .leg-r{animation:legR 0.3s infinite alternate}
+  #player.walk .arm-l{animation:armL 0.3s infinite alternate}
+  #player.walk .arm-r{animation:armR 0.3s infinite alternate}
+  @keyframes legL{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+  @keyframes legR{from{transform:rotate(20deg)}to{transform:rotate(-20deg)}}
+  @keyframes armL{from{transform:rotate(-15deg)}to{transform:rotate(15deg)}}
+  @keyframes armR{from{transform:rotate(15deg)}to{transform:rotate(-15deg)}}
+  #hud{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;align-items:flex-start;z-index:100;pointer-events:none;gap:4px;}
+  .hud-box{background:rgba(10,15,40,0.88);border:2px solid #c0392b;border-radius:10px;padding:4px 8px;font-family:'Bangers',cursive;letter-spacing:1px;color:#fff;font-size:clamp(11px,3vw,16px);pointer-events:none;white-space:nowrap;}
+  .hud-box span{color:#f5c518;}
+  .hud-title{font-size:clamp(12px,3.5vw,18px);text-align:center;}
+  #landlord-panel{position:absolute;top:65px;left:8px;z-index:101;background:rgba(60,10,10,0.96);border:2px solid #c0392b;border-radius:12px;padding:8px 12px;font-family:'Bangers',cursive;color:#fff;min-width:160px;}
+  .lp-label{font-size:9px;color:#ff8888;letter-spacing:2px;font-family:'Nunito';font-weight:900;text-transform:uppercase;margin-bottom:2px;}
+  .lp-money{font-size:clamp(16px,4vw,22px);color:#f5c518;}
+  .lp-sub{font-size:10px;color:#aaa;font-family:'Nunito';font-weight:700;margin-top:2px;}
+  .lp-sub em{color:#00cc66;font-style:normal;}
+  #collect-btn{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:110;background:linear-gradient(135deg,#8b0000,#cc0000);border:3px solid #ff6666;border-radius:16px;padding:14px 32px;font-family:'Bangers',cursive;color:#fff;font-size:clamp(18px,5vw,26px);cursor:pointer;letter-spacing:2px;box-shadow:0 4px 0 #600000;touch-action:manipulation;transition:transform 0.1s,box-shadow 0.1s;white-space:nowrap;}
+  #collect-btn:active{transform:translateX(-50%) translateY(3px);box-shadow:0 1px 0 #600000;}
+  #collect-btn:disabled{background:#555;border-color:#777;box-shadow:0 4px 0 #333;cursor:default;color:#aaa;}
+  #cooldown-bar-wrap{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);width:220px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;z-index:110;display:none;}
+  #cooldown-bar{height:6px;background:#c0392b;border-radius:3px;width:0%;transition:width 0.1s linear;}
+  .speech{position:absolute;background:#fff;border:3px solid #222;border-radius:14px;padding:6px 10px;font-size:clamp(10px,2.5vw,12px);font-weight:700;color:#111;max-width:160px;text-align:center;z-index:50;pointer-events:none;animation:popIn 0.2s ease;line-height:1.3;}
+  .speech::after{content:'';position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#222;}
+  .josh-bub{border-color:#f5c518!important;background:#fffbe6!important;color:#7a5000!important;max-width:180px;}
+  .josh-bub::after{border-top-color:#f5c518!important;}
+  .ll-bub{border-color:#c0392b!important;background:#fff2f0!important;color:#7a0000!important;max-width:210px;font-size:clamp(10px,2.5vw,13px);}
+  .ll-bub::after{border-top-color:#c0392b!important;}
+  @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .npc{position:absolute;z-index:15;display:flex;flex-direction:column;align-items:center;cursor:default;}
+  .ll-char{position:absolute;z-index:16;}
+  .sp{position:absolute;font-family:'Bangers',cursive;font-size:clamp(18px,5vw,24px);color:#f5c518;text-shadow:2px 2px 0 #000;pointer-events:none;z-index:80;animation:fly 1s ease forwards;}
+  .sp.g{color:#00cc66!important;}
+  .sp.r{color:#ff4455!important;}
+  @keyframes fly{from{transform:translateY(0);opacity:1}to{transform:translateY(-65px);opacity:0}}
+  #start-screen{position:absolute;inset:0;background:linear-gradient(160deg,#2a0000 0%,#600000 50%,#1a0000 100%);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;}
+  #start-screen h1{font-family:'Bangers',cursive;font-size:clamp(40px,12vw,84px);color:#f5c518;letter-spacing:4px;text-shadow:4px 4px 0 #c9a000;line-height:1;text-align:center;}
+  #start-screen .flag{font-size:clamp(36px,10vw,64px);line-height:1;}
+  .sub{font-size:clamp(10px,3vw,18px);color:#ffccaa;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;}
+  .desc{font-size:clamp(11px,2.5vw,15px);color:#ccc;max-width:480px;text-align:center;line-height:1.6;}
+  #start-btn{background:#f5c518;color:#1a1a2e;border:none;border-radius:16px;padding:13px 40px;font-family:'Bangers',cursive;font-size:clamp(22px,6vw,28px);letter-spacing:2px;cursor:pointer;box-shadow:0 6px 0 #c9a000;touch-action:manipulation;}
+  #start-btn:active{transform:translateY(2px);box-shadow:0 3px 0 #c9a000;}
+  #go-screen{display:none;position:absolute;inset:0;background:rgba(10,0,0,0.94);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;}
+  #go-screen.active{display:flex;}
+  #go-screen h2{font-family:'Bangers',cursive;font-size:clamp(44px,12vw,66px);color:#f5c518;letter-spacing:3px;text-align:center;}
+  #go-screen p{color:#ddd;font-size:clamp(14px,4vw,17px);font-weight:700;text-align:center;}
+  #rbtn{background:#c0392b;color:#fff;border:none;border-radius:12px;padding:12px 36px;font-family:'Bangers',cursive;font-size:clamp(20px,5vw,25px);letter-spacing:2px;cursor:pointer;touch-action:manipulation;margin-top:8px;}
+  #rbtn:active{transform:scale(1.05);}
+  .taxi{position:absolute;z-index:12;animation:taxiGo linear;}
+  @keyframes taxiGo{from{left:-120px}to{left:110%}}
+  #status-bar{position:absolute;top:65px;right:8px;z-index:101;background:rgba(10,30,10,0.92);border:2px solid #00cc66;border-radius:12px;padding:6px 10px;font-family:'Bangers',cursive;color:#fff;min-width:130px;}
+  .sb-label{font-size:9px;color:#00cc66;letter-spacing:2px;font-family:'Nunito';font-weight:900;text-transform:uppercase;margin-bottom:2px;}
+  .sb-val{font-size:clamp(13px,3.5vw,17px);}
+  .news-ticker{position:absolute;top:0;left:0;right:0;background:rgba(180,0,0,0.95);color:#fff;font-family:'Bangers',cursive;font-size:clamp(13px,3.5vw,17px);letter-spacing:2px;padding:5px 0;z-index:150;overflow:hidden;pointer-events:none;}
+  .news-scroll{white-space:nowrap;animation:tickerScroll 7s linear;}
+  @keyframes tickerScroll{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
+  #eviction-overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,0.82);z-index:210;align-items:center;justify-content:center;}
+  #eviction-overlay.active{display:flex;}
+  #eviction-box{background:linear-gradient(135deg,#1a0000,#3a0000);border:5px solid #f5c518;border-radius:24px;padding:24px 28px;text-align:center;max-width:400px;width:90%;animation:popIn 0.35s ease;}
+  #eviction-box h2{font-family:'Bangers',cursive;font-size:clamp(28px,7vw,40px);color:#f5c518;letter-spacing:2px;margin-bottom:8px;}
+  #eviction-box p{font-size:clamp(13px,3.5vw,16px);color:#ffccaa;font-weight:700;margin:6px 0;line-height:1.5;}
+  #eviction-box .e-amt{font-family:'Bangers',cursive;font-size:clamp(24px,6vw,32px);color:#00ff88;margin:10px 0;}
+  .e-btn{background:#f5c518;color:#1a1a2e;border:none;border-radius:12px;padding:11px 24px;font-family:'Bangers',cursive;font-size:clamp(18px,5vw,22px);letter-spacing:1px;cursor:pointer;margin-top:8px;touch-action:manipulation;}
+  .e-btn:active{transform:scale(1.05);}
+  .e-btn.grey{background:#555;color:#ccc;margin-left:8px;}
+</style>
+</head>
+<body>
+<div id="gc">
+  <div id="sky"><div id="bldgs"></div></div>
+  <div id="ground">
+    <div id="sidewalk"></div>
+    <div id="road">
+      <div class="rline" style="left:0;animation-delay:0s"></div>
+      <div class="rline" style="left:120px;animation-delay:.3s"></div>
+      <div class="rline" style="left:240px;animation-delay:.6s"></div>
+      <div class="rline" style="left:360px;animation-delay:.9s"></div>
+      <div class="rline" style="left:480px;animation-delay:1.2s"></div>
+      <div class="rline" style="left:600px;animation-delay:1.5s"></div>
+      <div class="rline" style="left:720px;animation-delay:1.8s"></div>
+    </div>
+  </div>
+
+  <div id="player" class="walk">
+    <svg viewBox="0 0 64 100" width="64" height="100" xmlns="http://www.w3.org/2000/svg">
+      <rect class="leg-l" x="20" y="72" width="11" height="26" rx="5" fill="#2c1a0e" style="transform-origin:25px 72px"/>
+      <rect class="leg-r" x="33" y="72" width="11" height="26" rx="5" fill="#2c1a0e" style="transform-origin:39px 72px"/>
+      <ellipse cx="25" cy="97" rx="9" ry="4" fill="#111"/>
+      <ellipse cx="39" cy="97" rx="9" ry="4" fill="#111"/>
+      <rect x="10" y="38" width="44" height="36" rx="8" fill="#1a5c2e"/>
+      <rect x="26" y="38" width="12" height="36" rx="2" fill="#166026" opacity="0.5"/>
+      <rect class="arm-l" x="2" y="40" width="10" height="22" rx="5" fill="#6b3a1f" style="transform-origin:7px 40px"/>
+      <rect class="arm-r" x="52" y="40" width="10" height="22" rx="5" fill="#6b3a1f" style="transform-origin:57px 40px"/>
+      <ellipse cx="7" cy="63" rx="6" ry="5" fill="#6b3a1f"/>
+      <ellipse cx="57" cy="63" rx="6" ry="5" fill="#6b3a1f"/>
+      <rect x="14" y="44" width="14" height="10" rx="2" fill="#fff"/>
+      <text x="21" y="52" font-size="5" font-family="Nunito,sans-serif" font-weight="900" fill="#1a5c2e" text-anchor="middle">PT</text>
+      <rect x="27" y="30" width="10" height="10" rx="3" fill="#6b3a1f"/>
+      <ellipse cx="32" cy="24" rx="16" ry="17" fill="#7a4422"/>
+      <ellipse cx="32" cy="9" rx="15" ry="7" fill="#1a0a00"/>
+      <ellipse cx="32" cy="34" rx="10" ry="5" fill="#1a0a00" opacity="0.7"/>
+      <ellipse cx="26" cy="23" rx="3" ry="3.5" fill="#fff"/>
+      <ellipse cx="38" cy="23" rx="3" ry="3.5" fill="#fff"/>
+      <ellipse cx="27" cy="23" rx="1.5" ry="2" fill="#111"/>
+      <ellipse cx="39" cy="23" rx="1.5" ry="2" fill="#111"/>
+      <rect x="22" y="18" width="8" height="2.5" rx="1" fill="#1a0a00" transform="rotate(-6,26,18)"/>
+      <rect x="34" y="18" width="8" height="2.5" rx="1" fill="#1a0a00" transform="rotate(6,38,18)"/>
+      <path d="M25 30 Q32 36 39 30" stroke="#1a0a00" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="30" width="8" height="4" rx="1" fill="#fff"/>
+      <rect x="17" y="13" width="30" height="5" rx="2" fill="#f5c518"/>
+      <text x="32" y="17" font-size="4" font-family="Nunito" font-weight="900" fill="#1a1a00" text-anchor="middle">DR</text>
+    </svg>
+  </div>
+
+  <div id="ll-player"></div>
+
+  <div id="hud">
+    <div class="hud-box">COLLECTED: <span id="rentCollected">0</span></div>
+    <div class="hud-box hud-title" style="border-color:#c0392b">TONY THE WOP<br><span style="font-size:clamp(8px,2vw,10px);color:#ffaaaa;font-family:Nunito;font-weight:700;">NYC Landlord</span></div>
+    <div class="hud-box">MISSED: <span id="rentMissed">0</span></div>
+  </div>
+
+  <div id="landlord-panel">
+    <div class="lp-label">Tony's Properties</div>
+    <div class="lp-money">$<span id="totalMoney">0</span> collected</div>
+    <div class="lp-sub">Josh owes: <em id="joshOwes">80</em> $JOSH</div>
+    <div class="lp-sub" style="margin-top:2px;">Josh has: <em id="joshHas">500</em> $JOSH</div>
+  </div>
+
+  <div id="status-bar">
+    <div class="sb-label">Tony's Status</div>
+    <div class="sb-val" id="tonyStatus">Watching... 👀</div>
+    <div class="sb-val" style="margin-top:3px;font-size:12px;color:#aaa;font-family:Nunito;font-weight:700;" id="tonyMood">Ready to collect</div>
+  </div>
+
+  <button id="collect-btn" onclick="sendTony()">
+    🇮🇹 SEND TONY FOR THE RENT!
+  </button>
+  <div id="cooldown-bar-wrap"><div id="cooldown-bar"></div></div>
+
+  <div id="eviction-overlay">
+    <div id="eviction-box">
+      <h2 id="evTitle">CAPISCE!</h2>
+      <p id="evDesc">The rent has been paid!</p>
+      <div class="e-amt" id="evAmt">+80 $JOSH</div>
+      <button class="e-btn" onclick="closeEviction()">GRAZIE! PREGO!</button>
+      <button class="e-btn grey" onclick="closeEviction()">OK</button>
+    </div>
+  </div>
+
+  <div id="start-screen">
+    <div class="flag">🇮🇹</div>
+    <h1>TONY<br>THE WOP</h1>
+    <div class="sub">NYC's Most Persistent Landlord</div>
+    <div class="desc">Dr. Josh is out there healing people and buying crypto — but he owes YOU rent. Watch him hustle from above, then send Tony in to collect!</div>
+    <button id="start-btn" onclick="startGame()">OI! LET'S COLLECT!</button>
+    <div style="font-size:clamp(10px,2.5vw,11px);color:#aa6655;font-weight:700;margin-top:4px;">You are Tony the Wop. Josh is your tenant. He always pays late.</div>
+  </div>
+
+  <div id="go-screen">
+    <h2>GAME OVER-A!</h2>
+    <p id="goReason" style="color:#ffaaaa;">Josh went broke!</p>
+    <p id="goCollected" style="color:#f5c518;">Total collected: 0 $JOSH</p>
+    <p id="goMissed" style="color:#ff6666;">Times unpaid: 0</p>
+    <button id="rbtn" onclick="restartGame()">PLAY AGAIN!</button>
+  </div>
+</div>
+
+<script>
+let rentCollected=0,rentMissed=0,gameRunning=false;
+let playerX=120,playerY=0;
+let npcs=[],npcId=0;
+let joshCoins=500,joshScore=0;
+let joshTO=null,lastTime=0;
+let tonyActive=false,tonyX=-100,tonyTargetX=300,tonyEl=null,tonySpeechEl=null;
+let tonyState='idle';
+let cooldownActive=false,cooldownDuration=12000;
+let totalMoneyCollected=0,missedCount=0;
+let pendingRent=0;
+let autoWalkDir=1,autoWalkTimer=0;
+let evictionOpen=false;
+
+const joshPhrases=["Buy my Crypto!","HODL tight!","PT and DeFi!","Stack $JOSH!","To the moon!","Guyanese power!"];
+const tonySay=[
+  "Oi! Docta Josh! Pay up or get OUT!",
+  "You think-a dis is a game, Docta Josh?!",
+  "Tony the Wop don't forget, capisce?!",
+  "Rent-a time, Docta Josh! Move it!",
+  "I got-a cousin Sal who handles dis stuff!",
+  "No crypto excuses! Tony wants CASH!",
+  "You owe Tony THREE months, Josh!!",
+  "I find-a you everywhere, Docta Josh!",
+];
+const NPC_TYPES=[
+  {color:'#e8d5b0',accent:'#c9b48a'},{color:'#d4896a',accent:'#b8623e'},
+  {color:'#8b5e3c',accent:'#6b4226'},{color:'#f0c8a0',accent:'#d4a06a'},
+];
+const NPC_SAY=["My back is killing me!","Only Dr. Josh!","Help me Dr. Josh!","My knee hurts!","Dr. Josh please!"];
+
+function init(){
+  buildBuildings();
+  window.addEventListener('keydown',e=>{if(e.code==='Space')e.preventDefault();});
+}
+
+function buildBuildings(){
+  const bg=document.getElementById('bldgs');
+  [{l:'2%',w:60,h:80},{l:'8%',w:90,h:130},{l:'16%',w:50,h:60},
+   {l:'22%',w:80,h:110},{l:'32%',w:70,h:95},{l:'40%',w:100,h:150},
+   {l:'52%',w:55,h:70},{l:'60%',w:85,h:120},{l:'70%',w:65,h:90},
+   {l:'78%',w:90,h:140},{l:'88%',w:70,h:100}].forEach(b=>{
+    const d=document.createElement('div');
+    d.className='building';
+    d.style.cssText=`left:${b.l};width:${b.w}px;height:${b.h}px;`;
+    for(let r=0;r<Math.floor(b.h/16);r++)
+      for(let c=0;c<Math.floor(b.w/14);c++)
+        if(Math.random()>0.4){
+          const w=document.createElement('div');
+          w.className='win-lit';
+          w.style.cssText=`left:${6+c*13}px;top:${8+r*14}px;opacity:${Math.random()>0.7?0:1}`;
+          d.appendChild(w);
+        }
+    bg.appendChild(d);
+  });
+}
+
+function startGame(){
+  document.getElementById('start-screen').style.display='none';
+  gameRunning=true;
+  joshCoins=500;joshScore=0;
+  totalMoneyCollected=0;missedCount=0;rentCollected=0;rentMissed=0;
+  playerX=120;playerY=0;
+  npcs=[];npcId=0;tonyActive=false;cooldownActive=false;evictionOpen=false;
+  pendingRent=generateRent();
+  updateHUD();updatePanels();
+  spawnNPCLoop();scheduleJoshPhrase();
+  lastTime=performance.now();
+  loop(lastTime);
+}
+
+function generateRent(){return Math.floor(80+Math.random()*100);}
+
+function loop(ts){
+  if(!gameRunning)return;
+  const dt=Math.min((ts-lastTime)/1000,0.05);
+  lastTime=ts;
+  updateJosh(dt);updateTony(dt);render();
+  requestAnimationFrame(loop);
+}
+
+function updateJosh(dt){
+  const W=document.getElementById('gc').clientWidth;
+  autoWalkTimer-=dt;
+  if(autoWalkTimer<=0){autoWalkDir=Math.random()>0.5?1:-1;autoWalkTimer=2+Math.random()*3;}
+  playerX+=autoWalkDir*90*dt;
+  if(playerX<20){playerX=20;autoWalkDir=1;}
+  if(playerX>W-80){playerX=W-80;autoWalkDir=-1;}
+  npcs.forEach(n=>{
+    if(n.healed)return;
+    if(Math.abs(playerX+32-(n.x+20))<70) setTimeout(()=>healNPC(n),600);
+  });
+  if(Math.random()<0.008){joshCoins+=Math.floor(3+Math.random()*8);updatePanels();}
+  const pl=document.getElementById('player');
+  pl.style.transform=autoWalkDir>0?'scaleX(1)':'scaleX(-1)';
+  if(!pl.classList.contains('walk'))pl.classList.add('walk');
+}
+
+function updateTony(dt){
+  if(!tonyActive||!tonyEl)return;
+  if(tonyState==='walking'){
+    const dx=tonyTargetX-tonyX;
+    if(Math.abs(dx)>3){
+      tonyX+=Math.sign(dx)*160*dt;
+      tonyEl.style.left=tonyX+'px';
+      tonyEl.style.transform=dx>0?'scaleX(1)':'scaleX(-1)';
+    } else {
+      tonyState='confronting';
+      tonyEl.style.transform='scaleX(1)';
+      showTonySpeech(tonySay[Math.floor(Math.random()*tonySay.length)]);
+      setTimeout(()=>{if(tonyActive)triggerRentDemand();},2500);
+    }
+  } else if(tonyState==='leaving'){
+    tonyX-=130*dt;
+    if(tonyEl)tonyEl.style.left=tonyX+'px';
+    if(tonyX<-120)finishTonyLeave();
+  }
+}
+
+function render(){
+  const h=document.getElementById('gc').clientHeight;
+  document.getElementById('player').style.left=playerX+'px';
+  document.getElementById('player').style.bottom=(h*0.38)+'px';
+  if(tonyEl&&tonyState!=='leaving')tonyEl.style.bottom=(h*0.38)+'px';
+}
+
+function spawnNPCLoop(){
+  if(!gameRunning)return;
+  spawnNPC();
+  setTimeout(spawnNPCLoop,4000+Math.random()*3000);
+}
+
+function spawnNPC(){
+  const gc=document.getElementById('gc');
+  const W=gc.clientWidth,h=gc.clientHeight;
+  const id=npcId++;
+  const type=NPC_TYPES[Math.floor(Math.random()*NPC_TYPES.length)];
+  const x=200+Math.random()*(W-350);
+  const npc={id,x,type,healed:false,el:null,speechEl:null};
+  const el=document.createElement('div');
+  el.className='npc';el.id='npc-'+id;
+  el.style.left=x+'px';el.style.bottom=(h*0.38)+'px';
+  el.innerHTML=drawNPC(type);
+  gc.appendChild(el);npc.el=el;npcs.push(npc);
+  setTimeout(()=>{if(!npc.healed)showNPCSpeech(npc);},300);
+  setTimeout(()=>{if(!npc.healed)removeNPC(npc);},10000);
+}
+
+function drawNPC(t){return `<svg viewBox="0 0 40 70" width="40" height="70" xmlns="http://www.w3.org/2000/svg">
+  <rect x="12" y="45" width="7" height="22" rx="3" fill="${t.accent}"/>
+  <rect x="21" y="45" width="7" height="22" rx="3" fill="${t.accent}" transform="rotate(10,24,45)"/>
+  <ellipse cx="14" cy="66" rx="6" ry="3" fill="#333"/><ellipse cx="25" cy="66" rx="6" ry="3" fill="#333"/>
+  <rect x="7" y="24" width="26" height="23" rx="6" fill="${t.color}"/>
+  <line x1="4" y1="30" x2="4" y2="60" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+  <rect x="33" y="26" width="5" height="18" rx="2" fill="${t.accent}"/>
+  <ellipse cx="20" cy="15" rx="11" ry="12" fill="${t.color}"/>
+  <ellipse cx="16" cy="14" rx="2.5" ry="2.5" fill="#fff"/><ellipse cx="24" cy="14" rx="2.5" ry="2.5" fill="#fff"/>
+  <ellipse cx="16" cy="15" rx="1.2" ry="1.2" fill="#333"/><ellipse cx="24" cy="15" rx="1.2" ry="1.2" fill="#333"/>
+  <path d="M14 21 Q20 18 26 21" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>`;}
+
+function showNPCSpeech(npc){
+  if(npc.healed)return;
+  clearNPCSpeech(npc);
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  const el=document.createElement('div');el.className='speech';
+  el.style.left=(npc.x-55)+'px';el.style.bottom=(h*0.38+78)+'px';
+  el.textContent=NPC_SAY[Math.floor(Math.random()*NPC_SAY.length)];
+  gc.appendChild(el);npc.speechEl=el;
+  setTimeout(()=>clearNPCSpeech(npc),2800);
+}
+function clearNPCSpeech(n){if(n.speechEl){n.speechEl.remove();n.speechEl=null;}}
+function removeNPC(n){if(n.el){n.el.remove();n.el=null;}clearNPCSpeech(n);npcs=npcs.filter(x=>x.id!==n.id);}
+function healNPC(n){
+  if(n.healed)return;
+  n.healed=true;clearNPCSpeech(n);
+  if(n.el){
+    n.el.innerHTML=`<svg viewBox="0 0 40 70" width="40" height="70" xmlns="http://www.w3.org/2000/svg">
+      <rect x="13" y="44" width="7" height="23" rx="3" fill="${n.type.accent}"/><rect x="21" y="44" width="7" height="23" rx="3" fill="${n.type.accent}"/>
+      <rect x="7" y="24" width="26" height="22" rx="6" fill="${n.type.color}"/>
+      <ellipse cx="20" cy="15" rx="11" ry="12" fill="${n.type.color}"/>
+      <ellipse cx="16" cy="13" rx="2.5" ry="2.5" fill="#fff"/><ellipse cx="24" cy="13" rx="2.5" ry="2.5" fill="#fff"/>
+      <path d="M14 19 Q20 24 26 19" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <text x="32" y="10" font-size="10" fill="#f5c518">★</text>
+    </svg>`;
+    setTimeout(()=>removeNPC(n),2000);
+  }
+  const earned=Math.floor(5+Math.random()*15);
+  joshCoins+=earned;updatePanels();
+  pop(n.x+20,'+'+earned,' g');
+}
+
+function sendTony(){
+  if(cooldownActive||tonyActive||!gameRunning||evictionOpen)return;
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  if(tonyEl){tonyEl.remove();tonyEl=null;}
+  if(tonySpeechEl){tonySpeechEl.remove();tonySpeechEl=null;}
+  tonyX=-80;tonyTargetX=playerX-60;tonyState='walking';tonyActive=true;
+  const el=document.createElement('div');
+  el.id='tony-el';el.className='ll-char';
+  el.style.cssText=`left:${tonyX}px;bottom:${h*0.38}px;position:absolute;z-index:18;`;
+  el.innerHTML=drawTony();
+  gc.appendChild(el);tonyEl=el;
+  setStatus('On his way... 🚶','Tony is comin for you!');
+  document.getElementById('collect-btn').disabled=true;
+  showTicker("🇮🇹 TONY THE WOP IS COMING FOR THE RENT! DOCTA JOSH YOU BETTER HAVE THE MONEY! 🇮🇹");
+}
+
+function triggerRentDemand(){
+  if(!tonyActive)return;
+  const amt=pendingRent;
+  setStatus('In his face! 😤','Demanding payment!');
+  if(joshCoins>=amt){
+    joshCoins-=amt;totalMoneyCollected+=amt;rentCollected++;
+    updateHUD();updatePanels();
+    pop(playerX+20,'+'+amt+' RENT','g');
+    showTonySpeech("Grazie Docta Josh! Don't be late next month!");
+    pendingRent=generateRent();
+    setStatus('Collected! 💰','Back to watching...');
+    showEviction(true,amt);
+  } else {
+    rentMissed++;missedCount++;updateHUD();
+    showTonySpeech("YOU GOT NO MONEY?! EVICTION-A!!");
+    pop(playerX+20,'EVICTED!','r');
+    setStatus('BROKE TENANT! 😡','Get him outta here!');
+    showEviction(false,0);
+  }
+  startTonyCooldown();
+}
+
+function showEviction(success,amt){
+  evictionOpen=true;
+  document.getElementById('evTitle').textContent=success?'CAPISCE!':'BADA BING!';
+  document.getElementById('evDesc').textContent=success?'Docta Josh paid up like a good tenant. Tony is pleased.':'Docta Josh is flat broke! Tony the Wop does NOT tolerate this!';
+  document.getElementById('evAmt').textContent=success?'+'+amt+' $JOSH collected!':'Josh has NO $JOSH left!';
+  document.getElementById('evAmt').style.color=success?'#00ff88':'#ff4455';
+  document.getElementById('eviction-overlay').classList.add('active');
+}
+
+function closeEviction(){
+  document.getElementById('eviction-overlay').classList.remove('active');
+  evictionOpen=false;
+  if(rentMissed>0&&joshCoins<=0){endGame();}
+  else{setTimeout(()=>{if(tonyEl&&tonyActive)tonyState='leaving';},400);}
+}
+
+function startTonyCooldown(){
+  cooldownActive=true;
+  document.getElementById('collect-btn').disabled=true;
+  const wrap=document.getElementById('cooldown-bar-wrap');
+  const bar=document.getElementById('cooldown-bar');
+  wrap.style.display='block';bar.style.width='0%';
+  let elapsed=0;
+  const interval=setInterval(()=>{
+    if(!gameRunning){clearInterval(interval);return;}
+    elapsed+=100;
+    bar.style.width=Math.min(100,elapsed/cooldownDuration*100)+'%';
+    if(elapsed>=cooldownDuration){
+      clearInterval(interval);cooldownActive=false;
+      wrap.style.display='none';bar.style.width='0%';
+      if(gameRunning&&!evictionOpen){
+        document.getElementById('collect-btn').disabled=false;
+        setStatus('Ready again! 💼','Send Tony back out!');
+      }
+    }
+  },100);
+}
+
+function finishTonyLeave(){
+  tonyActive=false;
+  if(tonyEl){tonyEl.remove();tonyEl=null;}
+  if(tonySpeechEl){tonySpeechEl.remove();tonySpeechEl=null;}
+}
+
+function showTonySpeech(msg){
+  if(tonySpeechEl){tonySpeechEl.remove();tonySpeechEl=null;}
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  const el=document.createElement('div');el.className='speech ll-bub';
+  el.style.left=Math.max(0,tonyX-90)+'px';el.style.bottom=(h*0.38+110)+'px';el.style.zIndex=55;
+  el.textContent=msg;gc.appendChild(el);tonySpeechEl=el;
+  setTimeout(()=>{if(tonySpeechEl===el){el.remove();tonySpeechEl=null;}},3500);
+}
+
+function showJoshSay(msg){
+  document.querySelectorAll('.josh-bub').forEach(e=>e.remove());
+  if(joshTO)clearTimeout(joshTO);
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  const el=document.createElement('div');el.className='speech josh-bub';
+  el.style.cssText=`left:${Math.max(0,playerX-55)}px;bottom:${h*0.38+115}px;z-index:60;`;
+  el.textContent=msg;gc.appendChild(el);
+  joshTO=setTimeout(()=>el.remove(),3000);
+}
+
+function scheduleJoshPhrase(){
+  setTimeout(()=>{
+    if(gameRunning)showJoshSay(joshPhrases[Math.floor(Math.random()*joshPhrases.length)]);
+    scheduleJoshPhrase();
+  },6000+Math.random()*5000);
+}
+
+function showTicker(msg){
+  document.querySelectorAll('.news-ticker').forEach(e=>e.remove());
+  const gc=document.getElementById('gc');
+  const t=document.createElement('div');t.className='news-ticker';
+  const s=document.createElement('div');s.className='news-scroll';
+  s.textContent=msg;t.appendChild(s);gc.appendChild(t);
+  setTimeout(()=>t.remove(),8000);
+}
+
+function pop(x,text,cls=''){
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  const el=document.createElement('div');
+  el.className='sp'+(cls?' '+cls.trim():'');
+  el.style.cssText=`left:${x}px;bottom:${h*0.56}px;`;
+  el.textContent=text;gc.appendChild(el);
+  setTimeout(()=>el.remove(),1100);
+}
+
+function setStatus(main,sub){
+  document.getElementById('tonyStatus').textContent=main;
+  document.getElementById('tonyMood').textContent=sub;
+}
+function updateHUD(){
+  document.getElementById('rentCollected').textContent=rentCollected;
+  document.getElementById('rentMissed').textContent=rentMissed;
+}
+function updatePanels(){
+  document.getElementById('totalMoney').textContent=totalMoneyCollected;
+  document.getElementById('joshOwes').textContent=pendingRent;
+  document.getElementById('joshHas').textContent=joshCoins;
+}
+function endGame(){
+  gameRunning=false;
+  document.getElementById('goReason').textContent='Josh went completely broke! Tony the Wop serves the eviction notice!';
+  document.getElementById('goCollected').textContent='Total collected: '+totalMoneyCollected+' $JOSH';
+  document.getElementById('goMissed').textContent='Times unpaid: '+rentMissed;
+  document.getElementById('go-screen').classList.add('active');
+}
+function restartGame(){
+  document.getElementById('go-screen').classList.remove('active');
+  document.getElementById('eviction-overlay').classList.remove('active');
+  npcs.forEach(n=>{if(n.el)n.el.remove();if(n.speechEl)n.speechEl.remove();});npcs=[];
+  if(tonyEl){tonyEl.remove();tonyEl=null;}
+  if(tonySpeechEl){tonySpeechEl.remove();tonySpeechEl=null;}
+  document.querySelectorAll('.speech,.sp,.taxi,.news-ticker').forEach(e=>e.remove());
+  document.getElementById('collect-btn').disabled=false;
+  document.getElementById('cooldown-bar-wrap').style.display='none';
+  startGame();
+}
+
+function drawTony(){return`<svg viewBox="0 0 52 92" width="52" height="92" xmlns="http://www.w3.org/2000/svg">
+  <rect x="17" y="63" width="9" height="26" rx="4" fill="#1a1a50"/>
+  <rect x="28" y="63" width="9" height="26" rx="4" fill="#1a1a50"/>
+  <ellipse cx="21" cy="88" rx="8" ry="4" fill="#111"/>
+  <ellipse cx="33" cy="88" rx="8" ry="4" fill="#111"/>
+  <rect x="10" y="35" width="32" height="30" rx="7" fill="#1a1a50"/>
+  <rect x="21" y="35" width="10" height="30" rx="2" fill="#f0f0f0"/>
+  <polygon points="24,37 28,37 26,60" fill="#c0392b"/>
+  <rect x="3" y="37" width="9" height="20" rx="4" fill="#1a1a50"/>
+  <ellipse cx="7" cy="58" rx="6" ry="5" fill="#f0c8a0"/>
+  <rect x="40" y="37" width="9" height="20" rx="4" fill="#1a1a50"/>
+  <rect x="38" y="52" width="20" height="14" rx="3" fill="#fff" stroke="#c0392b" stroke-width="1.5"/>
+  <text x="48" y="59" font-size="5" font-family="Nunito" font-weight="900" fill="#c0392b" text-anchor="middle">RENT</text>
+  <text x="48" y="64" font-size="4" font-family="Nunito" font-weight="700" fill="#333" text-anchor="middle">PAST DUE</text>
+  <rect x="22" y="25" width="9" height="12" rx="3" fill="#f0c8a0"/>
+  <ellipse cx="26" cy="17" rx="14" ry="15" fill="#f0c8a0"/>
+  <ellipse cx="26" cy="24" rx="11" ry="4.5" fill="#3a1a00"/>
+  <ellipse cx="19" cy="23" rx="5.5" ry="3.5" fill="#3a1a00"/>
+  <ellipse cx="33" cy="23" rx="5.5" ry="3.5" fill="#3a1a00"/>
+  <ellipse cx="21" cy="15" rx="3" ry="3" fill="#fff"/>
+  <ellipse cx="31" cy="15" rx="3" ry="3" fill="#fff"/>
+  <ellipse cx="22" cy="15" rx="1.5" ry="1.5" fill="#333"/>
+  <ellipse cx="32" cy="15" rx="1.5" ry="1.5" fill="#333"/>
+  <rect x="13" y="5" width="26" height="7" rx="2" fill="#0d0d30"/>
+  <rect x="9" y="9" width="34" height="3" rx="1" fill="#0d0d30"/>
+  <text x="26" y="11" font-size="3.5" font-family="Nunito" font-weight="900" fill="#f5c518" text-anchor="middle">TONY</text>
+</svg>`;}
+
+setInterval(()=>{if(gameRunning)spawnTaxi();},4000);
+function spawnTaxi(){
+  const gc=document.getElementById('gc'),h=gc.clientHeight;
+  const t=document.createElement('div');t.className='taxi';
+  t.style.bottom=(h*0.17)+'px';
+  t.innerHTML=`<svg viewBox="0 0 100 50" width="100" height="50">
+    <rect x="5" y="18" width="85" height="25" rx="5" fill="#f5c518"/>
+    <rect x="15" y="8" width="55" height="18" rx="4" fill="#c9a000"/>
+    <circle cx="22" cy="43" r="7" fill="#333"/><circle cx="22" cy="43" r="3" fill="#888"/>
+    <circle cx="74" cy="43" r="7" fill="#333"/><circle cx="74" cy="43" r="3" fill="#888"/>
+    <rect x="30" y="22" width="22" height="8" rx="2" fill="#fff"/>
+    <text x="41" y="29" font-size="6" font-family="Nunito" font-weight="900" fill="#e74c3c" text-anchor="middle">TAXI</text>
+  </svg>`;
+  t.style.animationDuration=(3+Math.random()*4)+'s';
+  t.addEventListener('animationend',()=>t.remove());
+  gc.appendChild(t);
+}
+
+init();
+</script>
+</body>
+</html>
+HTMLEOF
+echo "done"
